@@ -37,11 +37,9 @@ object Backend {
     import GCCCode._
     compileBody(debruijn, d.body).labelled(d.name)
   }
-  def compileBody(debruijn: Map[String, Int], ir: IR): Seq[GCCCode] = {
 
-  }
+  // compile ir with a mapping of symbol name to environment offsets
+  def compileBody(debruijn: Map[String, Int], ir: IR): Seq[GCCCode] = ???
 
-  def compileIR(ir: IR): Seq[] = {
-
-  }
+  def compileIR(ir: IR): Seq[GCCCode] = ???
 }
