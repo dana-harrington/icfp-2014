@@ -29,10 +29,17 @@ object GCCCode {
     def labelled(l: String): LabelledGCC = LabelledGCC(code, Some(l))
   }
 
+  implicit class LabellableGCCSeq(code: Seq[GCCCode]) {
+    // add label to first op code of a sequence
+    def labelled(l: String): List[LabelledGCC] = {
+      code.toList match {
+        case Nil => Nil
+        case h :: tl => h.labelled(l) :: tl.map(LabelledGCC(_, None))
+      }
+    }
+  }
+
 }
-
-case class LabelledGCC(code: GCCCode, label: Option[String])
-
 
 trait Address {
   def output: String
@@ -117,3 +124,4 @@ case object STOP extends GCCCode {
   def output = s"STOP"
 }
 
+case class LabelledGCC(code: GCCCode, label: Option[String])

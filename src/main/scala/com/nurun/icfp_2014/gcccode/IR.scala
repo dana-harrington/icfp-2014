@@ -31,5 +31,17 @@ case object MulOp extends PrimativeOp
 case object DivOp extends PrimativeOp
 
 object Backend {
-  def compile(ir: IR)(env: Env): Seq[GCCCode] = ???
+  def compile(ir: IR): Seq[GCCCode] = ???
+  def compile(d: Def): Seq[LabelledGCC] = {
+    val debruijn = d.args.zipWithIndex.toMap
+    import GCCCode._
+    compileBody(debruijn, d.body).labelled(d.name)
+  }
+  def compileBody(debruijn: Map[String, Int], ir: IR): Seq[GCCCode] = {
+
+  }
+
+  def compileIR(ir: IR): Seq[] = {
+
+  }
 }
