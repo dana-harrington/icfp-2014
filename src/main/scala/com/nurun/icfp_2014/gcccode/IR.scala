@@ -17,29 +17,48 @@ trait Applier
 
 object Example {
   val defs: Seq[Def] = Seq(
-    Def("go", Seq("x"), App(Var("to"), Seq(App(Prim(AddOp), Seq(Var("x"), Constant(1)))))),
-    Def("to", Seq("x"), App(Var("go"), Seq(App(Prim(SubOp), Seq(Var("x"), Constant(1))))))
+    Def("go", Seq("x"), App(Var("to"), Seq(App(Prim(ADD), Seq(Var("x"), Constant(1)))))),
+    Def("to", Seq("x"), App(Var("go"), Seq(App(Prim(SUB), Seq(Var("x"), Constant(1))))))
   )
   val main = App(Var("go"), Seq(Constant(1)))
   val ex1 = Program(defs, main)
+
 }
 
-trait PrimativeOp
-case object AddOp extends PrimativeOp
-case object SubOp extends PrimativeOp
-case object MulOp extends PrimativeOp
-case object DivOp extends PrimativeOp
+trait PrimativeOp extends GCCCode
 
 object Backend {
-  def compile(ir: IR): Seq[GCCCode] = ???
+
+  def compile(p: Program): Seq[LabelledGCC] = {
+    val defs = p.definitions.flatMap(compile)
+    val main = compile(Map.empty, p.main)
+    main.map(LabelledGCC(_, None)) ++: defs
+  }
+
   def compile(d: Def): Seq[LabelledGCC] = {
+    import GCCCode.LabellableGCCSeq
+
     val debruijn = d.args.zipWithIndex.toMap
-    import GCCCode._
-    compileBody(debruijn, d.body).labelled(d.name)
+    (compile(debruijn, d.body) :+ RTN).labelled(d.name)
   }
 
   // compile ir with a mapping of symbol name to environment offsets
-  def compileBody(debruijn: Map[String, Int], ir: IR): Seq[GCCCode] = ???
+  def compile(debruijn: Map[String, Int], ir: IR): Seq[GCCCode] = {
+    ir match {
+      case Lambda(_, _) => ???
 
-  def compileIR(ir: IR): Seq[GCCCode] = ???
+      case App(Prim(op), xs) => xs.flatMap(compile(debruijn, _)) :+ op
+
+      case App(Var(f), xs) => xs.flatMap(compile(debruijn, _)) ++ Seq(LDF(AddressLabel(f)), AP(xs.length))
+
+      case Constant(c) => Seq(LDC(c))
+
+      case Prim(op) => Seq(op)
+
+      case Var(v) =>
+        val idx = debruijn(v)
+        Seq(LD(0,idx))
+
+    }
+  }
 }

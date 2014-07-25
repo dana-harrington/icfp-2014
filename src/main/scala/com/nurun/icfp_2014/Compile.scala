@@ -1,6 +1,6 @@
 package com.nurun.icfp_2014
 
-import com.nurun.icfp_2014.gcccode.{Env, GCCCode}
+import com.nurun.icfp_2014.gcccode.{Example, Backend, Env, GCCCode}
 
 import scala.io.Source
 
@@ -14,7 +14,12 @@ object Compile {
 
       //srcText foreach println
 
-      GCCCode.delabel(ExampleLabelledGCC.ex1).map(_.output).foreach(println)
+      //GCCCode.delabel(ExampleLabelledGCC.ex1).map(_.output).foreach(println)
+      val labelled = Backend.compile(Example.ex1)
+      val delabelled = GCCCode.delabel(labelled)
+      val output = delabelled.map(_.output)
+
+      output.foreach(println)
     }
   }
 

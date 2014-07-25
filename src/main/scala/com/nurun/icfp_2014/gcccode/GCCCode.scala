@@ -64,37 +64,37 @@ case class LDC(lit: Literal) extends GCCCode {
 case class LD(env_offset: Int, data_offset: Int) extends GCCCode {
   def output = s"LD $env_offset $data_offset"
 }
-case object ADD extends GCCCode {
+case object ADD extends GCCCode with PrimativeOp {
   def output = s"ADD"
 }
-case object SUB extends GCCCode {
+case object SUB extends GCCCode with PrimativeOp {
   def output = s"SUB"
 }
-case object MUL extends GCCCode {
+case object MUL extends GCCCode with PrimativeOp {
   def output = s"MUL"
 }
-case object DIV extends GCCCode {
+case object DIV extends GCCCode with PrimativeOp {
   def output = s"DIV"
 }
-case object CEQ extends GCCCode {
+case object CEQ extends GCCCode with PrimativeOp {
   def output = s"CEQ"
 }
-case object CGT extends GCCCode {
+case object CGT extends GCCCode with PrimativeOp {
   def output = s"CGT"
 }
-case object CGTE extends GCCCode {
+case object CGTE extends GCCCode with PrimativeOp {
   def output = s"CGTE"
 }
 case object ATOM extends GCCCode {
   def output = s"ATOM"
 }
-case object CONS extends GCCCode {
+case object CONS extends GCCCode with PrimativeOp {
   def output = s"CONS"
 }
-case object CAR extends GCCCode {
+case object CAR extends GCCCode with PrimativeOp {
   def output = s"CAR"
 }
-case object CDR extends GCCCode {
+case object CDR extends GCCCode with PrimativeOp {
   def output = s"CDR"
 }
 case class SEL(true_address: Address, false_address: Address) extends GCCCode {
@@ -124,4 +124,6 @@ case object STOP extends GCCCode {
   def output = s"STOP"
 }
 
-case class LabelledGCC(code: GCCCode, label: Option[String])
+case class LabelledGCC(code: GCCCode, label: Option[String]) {
+  def output: String = label.map(_ + ":\n").getOrElse("") ++ "  " ++ code.output
+}
