@@ -24,9 +24,15 @@ object GCCCode {
     val env = Env.build(ops)
     ops.map(_.code).map(_.bind(env))
   }
+
+  implicit class LabellableGCC(code: GCCCode) {
+    def labelled(l: String): LabelledGCC = LabelledGCC(code, Some(l))
+  }
+
 }
 
 case class LabelledGCC(code: GCCCode, label: Option[String])
+
 
 trait Address {
   def output: String
