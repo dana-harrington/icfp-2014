@@ -1,6 +1,5 @@
 ;;;; Lisp Version of the ICFP-2014 AI
 
-
 (defun at(x list) 
   ;; Recursively look for the 'x'th element, 0-indexed
   (if (= x 0) (car list) (at (- x 1) (cdr list))))
@@ -42,7 +41,7 @@
 (defun invis-ghost? (status) (= status 2))
 (defun normal-ghost? (status) (= status 0))
 
- The following could be used by the compiler to test the following:
+;; The following code could be used by the compiler to test:
 ;; - using a function
 ;; - passing in multiple arguments
 ;; - building CONS
