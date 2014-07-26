@@ -3,6 +3,8 @@
 /project/*-shim.sbt
 /project/project/
 /project/target/
+/project/.idea/
 /target/
 /.idea/
 /.idea_modules/
+
