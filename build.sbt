@@ -11,3 +11,5 @@ libraryDependencies += "org.specs2" %% "specs2" % "2.3.13" % "test"
 // Uncomment to use Akka
 //libraryDependencies += "com.typesafe.akka" % "akka-actor_2.11" % "2.3.3"
 
+scalacOptions += "-feature"
+

@@ -3,15 +3,15 @@ package com.nurun.icfp_2014.gcccode
 /**
  * Created by dana.harrington on 2014-07-25.
  */
-case class Env(label: Map[String, Literal])
+case class Env(label: Map[String, AddressLiteral])
 
 object Env {
-  def empty = Env(Map.empty[String, Literal])
+  def empty = Env(Map.empty[String, AddressLiteral])
   
   def build(program: Seq[LabelledGCC]): Env = {
     program.zipWithIndex.foldLeft(Env.empty){ case (env, (op,idx)) =>
       op.label match {
-        case Some(label) => env.copy(label = env.label + (label -> idx))
+        case Some(label) => env.copy(label = env.label + (label -> AddressLiteral(idx)))
         case None => env
       }
     }
@@ -41,9 +41,10 @@ object GCCCode {
 
 }
 
-trait Address {
+// A symbolic or absolute GCC address
+sealed trait Address {
   def output: String
-  def bind(env: Env): Address
+  def bind(env: Env): Address // bind label addresses to an address literal
 }
 case class AddressLiteral(literal: Literal) extends Address {
   def output = literal.toString
@@ -51,12 +52,13 @@ case class AddressLiteral(literal: Literal) extends Address {
 }
 case class AddressLabel(label: String) extends Address {
   def output = label
-  def bind(env: Env) = env.label.get(label).map(AddressLiteral.apply).getOrElse(this)
+  def bind(env: Env) = env.label.getOrElse(label, this)
 }
 
-trait GCCCode {
+// A GCC code operation
+sealed trait GCCCode {
   def output: String
-  def bind(env: Env): GCCCode = this
+  def bind(env: Env): GCCCode = this // bind any label address to a literal value from the environment
 }
 case class LDC(lit: Literal) extends GCCCode {
   def output = s"LDC $lit"
@@ -124,6 +126,12 @@ case object STOP extends GCCCode {
   def output = s"STOP"
 }
 
+
+// Primative ops are referenced directly in the source language and can be applied directly
+trait PrimativeOp extends GCCCode
+
+
+// A GCC operation with an optional label
 case class LabelledGCC(code: GCCCode, label: Option[String]) {
   def output: String = label.map(_ + ":\n").getOrElse("") ++ "  " ++ code.output
 }
