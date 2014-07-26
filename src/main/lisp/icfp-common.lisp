@@ -42,8 +42,25 @@
 (defun invis-ghost? (status) (= status 2))
 (defun normal-ghost? (status) (= status 0))
 
-;;; simple test
-(print (at 3 (cons 0 (cons 1 (cons 2 (cons 3 nil))))))
+ The following could be used by the compiler to test the following:
+;; - using a function
+;; - passing in multiple arguments
+;; - building CONS
+;; - branching ('at' uses if)
+;; - recursive calls
+;; - constants
+;; (at 3 (cons 0 (cons 1 (cons 2 (cons 3 nil)))))
+;; Expected result: 3
+
+
+(defun step (out-state world-state) (cons 0 1))
+
+;;; Main is the initial function
+;;; NB Main requires a number of things to be handled by the compiler:
+;;;    The assembly for main must be at the top of the file
+;;;    We need handle "pairs" (which are cons with no nil at the end)
+;;;    We need to be able to pass functions as arguments
+(defun main (world-state, ghost-logic) (cons 0 step))
 
 
 
