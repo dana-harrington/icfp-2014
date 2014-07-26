@@ -1,6 +1,7 @@
 package com.nurun.icfp_2014.parser
 
 import org.specs2.mutable._
+
 /**
  * Created by dana.harrington on 2014-07-26.
  */
@@ -14,7 +15,7 @@ class ParserSpec extends Specification {
         """.stripMargin
       val expected = ProgramAST(Seq(), Constant(1))
 
-      Parser.parse(program) === Some(expected)
+      Parser.parse(program).get === expected
     }
 
     "parse a program with a definition" in {
@@ -27,7 +28,7 @@ class ParserSpec extends Specification {
       val main = App(Literal("f"), Seq(Constant(2)))
       val expected = ProgramAST(Seq(fDef), main)
 
-      Parser.parse(program) == Some(expected)
+      Parser.parse(program).get == expected
     }
 
     "parse an if statement" in {
@@ -39,7 +40,7 @@ class ParserSpec extends Specification {
                                         Constant(42),
                                         Constant(0)))
       val expected = ProgramAST(Seq(), main)
-      Parser.parse(program) === Some(expected)
+      Parser.parse(program).get === expected
     }
 
     "ignore comment lines" in {
@@ -53,10 +54,10 @@ class ParserSpec extends Specification {
       val main = App(Literal("f"), Seq(Constant(2)))
       val expected = ProgramAST(Seq(fDef), main)
 
-      Parser.parse(program) === Some(expected)
+      Parser.parse(program).get === expected
     }
 
-    
+
   }
 
 }
