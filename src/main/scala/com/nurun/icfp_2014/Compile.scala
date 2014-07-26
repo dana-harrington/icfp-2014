@@ -1,8 +1,8 @@
 package com.nurun.icfp_2014
 
 import com.nurun.icfp_2014.gcccode.{Example, CodeGen, Env, GCCCode}
-
 import scala.io.Source
+import scala.language.implicitConversions
 
 object Compile {
   def main(args: Array[String]): Unit = {
@@ -23,7 +23,6 @@ object Compile {
   case class ParseResult(ops: Seq[GCCCode], env: Env)
 
   case class ParsedLine(label: Option[String], code: GCCCode)
-
 
 }
 

@@ -1,5 +1,7 @@
 package com.nurun.icfp_2014.gcccode
 
+import scala.language.implicitConversions
+
 /**
  * Created by dana.harrington on 2014-07-25.
  */
@@ -26,7 +28,7 @@ object Example {
 
 }
 
-trait PrimativeOp extends GCCCode
+
 
 case class GenCode(main: Seq[GCCCode], branches: Seq[LabelledGCC] = Seq()) {
   def ++(gc: GenCode): GenCode = {
