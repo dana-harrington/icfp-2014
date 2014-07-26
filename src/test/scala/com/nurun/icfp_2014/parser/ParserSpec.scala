@@ -38,6 +38,8 @@ class ParserSpec extends Specification {
       val main = App(Literal("if"), Seq(App(Literal("CGT"), Seq(Constant(1), Constant(2))),
                                         Constant(42),
                                         Constant(0)))
+      val expected = ProgramAST(Seq(), main)
+      Parser.parse(program) === Some(expected)
     }
   }
 
