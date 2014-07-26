@@ -1,6 +1,7 @@
 package com.nurun.icfp_2014
 
-import com.nurun.icfp_2014.gcccode.{Example, CodeGen, Env, GCCCode}
+import com.nurun.icfp_2014.gcccode.{CodeGen, Env, GCCCode}
+import com.nurun.icfp_2014.ir.Example
 import scala.io.Source
 import scala.language.implicitConversions
 
