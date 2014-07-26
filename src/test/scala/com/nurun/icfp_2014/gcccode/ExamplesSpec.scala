@@ -13,8 +13,8 @@ class ExamplesSpec extends Specification {
   "Example" should {
     "goto.gcc" in {
       val defs: Seq[Def] = Seq(
-        Def("go", Seq("x"), App(Var("to"), Seq(App(Prim(AddOp), Seq(Var("x"), Constant(1)))))),
-        Def("to", Seq("x"), App(Var("go"), Seq(App(Prim(SubOp), Seq(Var("x"), Constant(1))))))
+        Def("go", Seq("x"), App(Var("to"), Seq(App(Prim(ADD), Seq(Var("x"), Constant(1)))))),
+        Def("to", Seq("x"), App(Var("go"), Seq(App(Prim(SUB), Seq(Var("x"), Constant(1))))))
       )
       val main = App(Var("go"), Seq(Constant(1)))
       val ex1 = Program(defs, main)

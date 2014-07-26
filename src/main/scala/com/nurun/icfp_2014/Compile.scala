@@ -1,21 +1,18 @@
 package com.nurun.icfp_2014
 
-import com.nurun.icfp_2014.gcccode.{Example, Backend, Env, GCCCode}
+import com.nurun.icfp_2014.gcccode.{Example, CodeGen, Env, GCCCode}
 
 import scala.io.Source
 
 object Compile {
   def main(args: Array[String]): Unit = {
-    args.headOption.foreach { file =>
-      // parse
-      // compile
-      // labelled output
-      // delabelled output
+    val sourceFile = args.headOption
 
-      //srcText foreach println
-
+    sourceFile.foreach { file =>
       //GCCCode.delabel(ExampleLabelledGCC.ex1).map(_.output).foreach(println)
-      val labelled = Backend.compile(Example.ex1)
+      val sourceCode = Source.fromFile(file).mkString
+      val ast = parser.Parser.parse(sourceCode).get
+      val labelled = CodeGen.codegen(Example.ex1)
       val delabelled = GCCCode.delabel(labelled)
       val output = delabelled.map(_.output)
 
