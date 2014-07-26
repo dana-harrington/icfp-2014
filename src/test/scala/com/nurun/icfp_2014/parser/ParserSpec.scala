@@ -20,7 +20,7 @@ class ParserSpec extends Specification {
     "parse a program with a definition" in {
       val program =
         """
-          |(def f (x) (+ x x))
+          |(defun f (x) (+ x x))
           |(f 2)
         """.stripMargin
       val fDef = Def("f", Seq("x"), App(Literal("+"), Seq(Literal("x"), Literal("x"))))
@@ -33,7 +33,7 @@ class ParserSpec extends Specification {
     "parse an if statement" in {
       val program =
         """
-          |(if (CGT 1 2) 42 0)
+          |(if (> 1 2) 42 0)
         """.stripMargin
       val main = App(Literal("if"), Seq(App(Literal("CGT"), Seq(Constant(1), Constant(2))),
                                         Constant(42),
