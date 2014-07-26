@@ -1,35 +1,11 @@
 package com.nurun.icfp_2014.gcccode
 
+import com.nurun.icfp_2014.ir._
 import scala.language.implicitConversions
 
 /**
- * Created by dana.harrington on 2014-07-25.
+ * Created by dana.harrington on 2014-07-26.
  */
-sealed trait IR
-case class Lambda(args: Seq[String], body: IR) extends IR
-case class App(fn: Applier, args: Seq[IR]) extends IR
-case class Constant(constant: Int) extends IR
-case class Prim(op: PrimativeOp) extends IR with Applier
-case class Var(name: String) extends IR with Applier
-case class If(pred: IR, thn: IR, els: IR) extends IR
-
-case class Def(name: String, args: Seq[String], body: IR)
-case class Program(definitions: Seq[Def], main: IR)
-
-sealed trait Applier
-
-object Example {
-  val defs: Seq[Def] = Seq(
-    Def("go", Seq("x"), App(Var("to"), Seq(App(Prim(ADD), Seq(Var("x"), Constant(1)))))),
-    Def("to", Seq("x"), App(Var("go"), Seq(App(Prim(SUB), Seq(Var("x"), Constant(1))))))
-  )
-  val main = App(Var("go"), Seq(Constant(1)))
-  val ex1 = Program(defs, main)
-
-}
-
-
-
 case class GenCode(main: Seq[GCCCode], branches: Seq[LabelledGCC] = Seq()) {
   def ++(gc: GenCode): GenCode = {
     GenCode(main ++ gc.main, branches ++ gc.branches)
@@ -63,7 +39,6 @@ object CodeGen {
   }
 
   def codegen(d: Def): Seq[LabelledGCC] = {
-    import GCCCode.LabellableGCCSeq
 
     val debruijn = d.args.zipWithIndex.toMap
     val GenCode(main, branchCode) = codegen(debruijn, d.body)
@@ -80,8 +55,8 @@ object CodeGen {
 
       case App(Prim(op), xs) =>
         val evalArgs = xs.map(codegen(debruijn, _))
-                         .reduceOption(_ ++ _)
-                         .getOrElse(GenCode(Seq()))
+          .reduceOption(_ ++ _)
+          .getOrElse(GenCode(Seq()))
         evalArgs :+ op
 
       case App(Var(f), xs) =>
@@ -113,7 +88,7 @@ object CodeGen {
         val elseCode = codegen(debruijn, els) :+ JOIN
 
         predCode.addBranches(thenCode.toCode(thenLabel))
-                .addBranches(elseCode.toCode(elseLabel))
+          .addBranches(elseCode.toCode(elseLabel))
 
 
     }

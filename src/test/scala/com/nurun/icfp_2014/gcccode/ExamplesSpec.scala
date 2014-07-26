@@ -2,6 +2,7 @@ package com.nurun.icfp_2014.gcccode
 
 import java.nio.channels.NonWritableChannelException
 
+import com.nurun.icfp_2014.ir._
 import org.specs2.mutable._
 import com.nurun.icfp_2014._
 
