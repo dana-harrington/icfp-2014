@@ -41,6 +41,22 @@ class ParserSpec extends Specification {
       val expected = ProgramAST(Seq(), main)
       Parser.parse(program) === Some(expected)
     }
+
+    "ignore comment lines" in {
+      val program =
+        """
+          |; this is a comment
+          |(defun f (x) (* x x)) ; this is also a comment
+          |(f 2)
+        """.stripMargin
+      val fDef = Def("f", Seq("x"), App(Literal("*"), Seq(Literal("x"), Literal("x"))))
+      val main = App(Literal("f"), Seq(Constant(2)))
+      val expected = ProgramAST(Seq(fDef), main)
+
+      Parser.parse(program) === Some(expected)
+    }
+
+    
   }
 
 }
