@@ -106,7 +106,6 @@ class ParserSpec extends Specification {
         """.stripMargin
 
       val result = Parser.parse(program)
-      println(result)
       result.toOption should beSome
     }
 
