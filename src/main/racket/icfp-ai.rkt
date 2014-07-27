@@ -116,9 +116,9 @@
         (back direction))))) ;; assume we are always able to turn around
 
 (define (find_food location direction map)
-  (if (edible? (tile_infront location direction)) (forward direction)
-    (if (edible? (tile_left_of location direction)) (left direction)
-      (if (edible? (tile_right_of location direction)) (right direction)
+  (if (edible? (tile_infront location direction map)) (forward direction)
+    (if (edible? (tile_left_of location direction map)) (left direction)
+      (if (edible? (tile_right_of location direction map)) (right direction)
       (next_move location direction map))
     )
   )
