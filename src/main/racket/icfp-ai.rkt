@@ -91,7 +91,7 @@
 ;; Should we move right? Basic AI will say "can I?" Then sure!"
 (define (move-right? lambda-loc direction map) (empty-tile? (tile-right-of lambda-loc direction map)))
 
-(define (next-movement lambda-loc direction map) 
+(define (next-move lambda-loc direction map) 
   (if (move-forward? lambda-loc direction map) (forward direction)
     (if (move-left? lambda-loc direction map) (left direction) 
       (if (move-right? lambda-loc direction map) (right direction) 
@@ -123,4 +123,11 @@
 ;;;    We need to handle "pairs" (which are cons with no nil at the end)
 ;;;    We need to be able to pass functions as arguments
 (define (main world-state ghost-logic) (cons 0 step))
+
+;; AI Test Code
+(define world-map (cons(cons 0 (cons 0 0)) (cons 0 (cons 1 1))))
+(define lambda-man-loc (list 2 1))
+(define lambda-man-dir (north))
+
+(next-move lambda-man-loc lambda-man-dir world-map)
 
