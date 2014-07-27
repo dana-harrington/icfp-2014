@@ -32,6 +32,22 @@ object Example {
 }
 
 object IR {
+  val primativeOps: Map[String, PrimativeOp] = {
+    import com.nurun.icfp_2014.gcccode._
+    Map(
+      "+" -> ADD,
+      "-" -> SUB,
+      "*" -> MUL,
+      "/" -> DIV,
+      "cons" -> CONS,
+      "car" -> CAR,
+      "cdr" -> CDR,
+      "=" -> CEQ,
+      ">" -> CGT,
+      ">=" -> CGTE
+    )
+  }
+
   def fromAST(ast: ProgramAST): Program = ???
 }
 
