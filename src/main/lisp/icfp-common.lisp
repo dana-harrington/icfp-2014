@@ -13,9 +13,9 @@
 (defun south () 2)
 (defun east () 1)
 
-(defun left (direction) (if (= direction (north)) (west) (if (= direction (west)) (south) (if (= direction (south)) (east) (if (= direction (east)) (north))))))
-(defun right (direction) (if (= direction (north)) (east) (if (= direction (west)) (north) (if (= direction (south)) (west) (if (= direction (east)) (south))))))
-(defun back (direction) (if (= direction (north)) (south) (if (= direction (west)) (east) (if (= direction (south)) (north) (if (= direction (east)) (west))))))
+(defun left (direction) (mod (- direction 1) 4))
+(defun right (direction) (mod (+ direction 1) 4))
+(defun back (direction) (mod (+ direction 2) 4))
 
 ;;; Map functions
 (defun get-tile(x y map) (at x (at y map)))
@@ -69,11 +69,6 @@
 ;;;    We need to handle "pairs" (which are cons with no nil at the end)
 ;;;    We need to be able to pass functions as arguments
 (defun main (world-state ghost-logic) (cons 0 step))
-
-;;(print (left (north)))
-;;(print (left (east)))
-;;(print (left (south)))
-;;(print (left (west)))
 
 
 
