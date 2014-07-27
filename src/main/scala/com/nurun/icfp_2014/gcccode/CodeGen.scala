@@ -55,7 +55,7 @@ object CodeGen {
       case Abs(args, expr) =>
         val localScope = args.zipWithIndex.toMap.mapValues(i => (0,i))
         val parentScope = debruijn.mapValues{ case(fp, idx) => (fp+1, idx)}
-        codegen(parentScope ++ localScope, expr)
+        codegen(parentScope ++ localScope, expr) :+ RTN
 
       case App(Prim(op), xs) =>
         val evalArgs = xs.map(codegen(debruijn, _))
