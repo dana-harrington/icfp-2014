@@ -19,12 +19,9 @@ class ExamplesSpec extends Specification {
       )
       val main = App(Var("go"), Seq(Constant(1)))
       val ex1 = Program(defs, main)
-      val result = GCCCode.delabel(ExampleLabelledGCC.ex1).map(_.output)
+      val result = ExampleLabelledGCC.ex1.map(_.output)
 
       val compare = result.zip(exFormat(gotogcc))
-      /*compare.foreach {
-        case (actual, expected) => println(actual.padTo(20, ' ') + expected)
-      }*/
       for {
         (actual, expected) <- compare
       } yield {

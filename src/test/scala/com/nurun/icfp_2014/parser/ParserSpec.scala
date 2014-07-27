@@ -72,6 +72,16 @@ class ParserSpec extends Specification {
       Parser.parse(program).get === expected
     }
 
+    "parse a lambda expression" in {
+      val program =
+        """
+          |(lambda (x y) (+ x y))
+        """.stripMargin
+      val main = Abs(Seq("x", "y"), App(Literal("+"), Seq(Literal("x"), Literal("y"))))
+      val expected = ProgramAST(Seq(), main)
+      Parser.parse(program).get === expected
+    }
+
 
   }
 

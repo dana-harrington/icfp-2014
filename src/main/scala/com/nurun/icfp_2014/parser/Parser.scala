@@ -1,5 +1,7 @@
 package com.nurun.icfp_2014.parser
 
+import com.nurun.icfp_2014.ir.IR
+
 import scala.util.parsing.combinator.lexical.StdLexical
 import scala.util.parsing.combinator.syntactical.StdTokenParsers
 import scala.util.parsing.input.CharArrayReader._
@@ -16,7 +18,7 @@ class Lexer extends StdLexical {
 object Parser extends StdTokenParsers {
   type Tokens = StdLexical
   val lexical = new Lexer
-  val opChars = Seq("+", "-", "*", "/", ">", "<", ">=")
+  val opChars = IR.primativeOps.keys
   lexical.delimiters ++= (Seq("(", ")") ++ opChars)
   lexical.reserved ++= Seq("if", "define", "lambda")
 
@@ -24,7 +26,7 @@ object Parser extends StdTokenParsers {
 
   def expr: Parser[Expr] = atom | ifStmt | abs | ap
   def const = numericLit ^^ (n => Constant(n.toInt))
-  def op = "+" | "-" | "*" | "/" | ">" | "<" | ">="
+  def op = "+" | "-" | "*" | "/" | ">" | ">="
   def literal = (ident | op) ^^ { op => Literal(op) }
   def atom = literal |
              const
