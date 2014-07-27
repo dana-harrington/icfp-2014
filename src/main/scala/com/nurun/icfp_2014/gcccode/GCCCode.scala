@@ -100,7 +100,7 @@ case object CDR extends GCCCode with PrimativeOp {
   def output = s"CDR"
 }
 case class SEL(true_address: Address, false_address: Address) extends GCCCode {
-  def output = s"SEL ${true_address.output} $false_address"
+  def output = s"SEL ${true_address.output} ${false_address.output}"
   override def bind(env: Env) = SEL(true_address.bind(env), false_address.bind(env))
 }
 case object JOIN extends GCCCode {
