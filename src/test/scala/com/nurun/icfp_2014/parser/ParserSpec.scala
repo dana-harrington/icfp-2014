@@ -19,19 +19,26 @@ class ParserSpec extends Specification {
     }
 
     "parse a definition" in {
-      val defn = "(define f (lambda (x) (+ x x)))"
+      val defn = "(define (f x) (+ x x))"
       val tokens = new Parser.lexical.Scanner(defn)
 
-      Parser.phrase(Parser.defun)(tokens).get === Def("f", Abs(Seq("x"), App(Literal("+"), Seq(Literal("x"), Literal("x")))))
+      /*def showTokens(s: Parser.lexical.Scanner): Unit =
+        if (!s.atEnd) {
+          println(s.first.toString())
+          showTokens(s.rest)
+        }
+      showTokens(tokens)*/
+
+      Parser.phrase(Parser.defun)(tokens).get === Def("f", Seq("x"), App(Literal("+"), Seq(Literal("x"), Literal("x"))))
     }
 
     "parse a program with a definition" in {
       val program =
         """
-          |(define f (lambda (x) (+ x x)))
+          |(define (f x) (+ x x))
           |(f 2)
         """.stripMargin
-      val fDef = Def("f", Abs(Seq("x"), App(Literal("+"), Seq(Literal("x"), Literal("x")))))
+      val fDef = Def("f", Seq("x"), App(Literal("+"), Seq(Literal("x"), Literal("x"))))
       val main = App(Literal("f"), Seq(Constant(2)))
       val expected = ProgramAST(Seq(fDef), main)
 
@@ -47,7 +54,7 @@ class ParserSpec extends Specification {
                                         Constant(42),
                                         Constant(0))
       val expected = ProgramAST(Seq(), main)
-      
+
       Parser.parse(program).get === expected
     }
 
@@ -55,10 +62,10 @@ class ParserSpec extends Specification {
       val program =
         """
           |; this is a comment
-          |(define f (lambda (x) (* x x))) ; this is also a comment
+          |(define (f x) (* x x)) ; this is also a comment
           |(f 2)
         """.stripMargin
-      val fDef = Def("f", Abs(Seq("x"), App(Literal("*"), Seq(Literal("x"), Literal("x")))))
+      val fDef = Def("f", Seq("x"), App(Literal("*"), Seq(Literal("x"), Literal("x"))))
       val main = App(Literal("f"), Seq(Constant(2)))
       val expected = ProgramAST(Seq(fDef), main)
 

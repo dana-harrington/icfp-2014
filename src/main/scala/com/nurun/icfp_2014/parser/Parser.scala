@@ -33,8 +33,8 @@ object Parser extends StdTokenParsers {
       If(pred, thn, els)
   }
 
-  def defun = "(" ~> Keyword("define") ~> ident ~ expr <~ ")" ^^ { case name ~ expr  =>
-    Def(name, expr)
+  def defun = "(" ~> Keyword("define") ~> ("(" ~> ident ~ rep(ident) <~ ")") ~ expr <~ ")" ^^ { case name ~ args ~ expr  =>
+    Def(name, args, expr)
   }
 
   def abs = "(" ~> Keyword("lambda") ~> ("(" ~> rep(ident) <~ ")") ~ expr <~ ")" ^^ { case args ~ expr  =>

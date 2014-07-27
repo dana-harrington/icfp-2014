@@ -41,8 +41,8 @@ object CodeGen {
   def codegen(d: Def): Seq[LabelledGCC] = {
 
     val debruijn = d.args.zipWithIndex.toMap.mapValues(i => (0,i))
-    val GenCode(main, branchCode) = codegen(debruijn, d.body)
-    (main :+ RTN).labelled(d.name)
+    val generatedCode = codegen(debruijn, d.body)
+    (generatedCode :+ RTN).toCode(d.name)
   }
 
   implicit def seqToGenCode(s: Seq[GCCCode]): GenCode = GenCode(s)
