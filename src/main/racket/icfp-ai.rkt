@@ -7,20 +7,16 @@
 
 ;; TODO Remove this before compiling. atom? will exist in our language but not racket
 (define (atom? n) (not (or (pair? n) (null? n))))
+(define (lt a b) (< a b))
 
 ;; TODO Uncomment before compiling
+;;(define (modulo x n) (- x (* n (/ x n))))
 ;;(define (or a b) (> (+ a b) 0))
 ;;(define (not a) (if (= a 1) 0 1))
 ;;(define (lt a b) (if (>= a b) 0 1))
 
-;; TODO Remove this before compiling
-(define (lt a b) (< a b))
-
 (define (size list) (size_help list 0))
 (define (size_help list n) (if (atom? list) n (size_help (cdr list) (+ n 1))))  
-;;; mod using integer division. Useful for when no longer in racket
-;; TODO Uncomment this before compiling
-;; (define (modulo x n) (- x (* n (/ x n))))
 
 ;;; Movement Constants
 (define (north) 0)
