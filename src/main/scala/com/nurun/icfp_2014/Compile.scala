@@ -47,8 +47,8 @@ object Compile {
         val outputText = outputCode.map(_.output).mkString("\n")
         outStream.println(outputText)
 
-      case e: parser.Parser.NoSuccess =>
-        Console.err.println(e.msg)
+      case Parser.NoSuccess(err, next) =>
+        Console.err.println(s"$err on line ${next.pos.line}")
     }
   }
 }
