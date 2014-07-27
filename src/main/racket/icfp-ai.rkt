@@ -5,8 +5,19 @@
   ;; Recursively look for the 'x'th element, 0_indexed
   (if (= x 0) (car list) (at (- x 1) (cdr list))))
 
-;;; mod using integer division. Useful for when no longer in lisp
-;; (define (remainder x n) (_ x (* n (/ x n))))
+;; TODO Remove this before compiling. atom? will exist in our language but not racket
+(define (atom? n) (not (or (pair? n) (null? n))))
+
+;; TODO Uncomment before compiling
+;;(define (or a b) (> (+ a b) 0))
+;;(define (not a) (if a 0 1))
+;;(define (< a b) (if (>= a b) 0 1))
+
+(define (size list) (size_help list 0))
+(define (size_help list n) (if (atom? list) n (size_help (cdr list) (+ n 1))))  
+;;; mod using integer division. Useful for when no longer in racket
+;; TODO Uncomment this before compiling
+;; (define (modulo x n) (- x (* n (/ x n))))
 
 ;;; Movement Constants
 (define (north) 0)
@@ -15,19 +26,24 @@
 (define (east) 1)
 
 (define (forward direction) direction)
-(define (left direction) (remainder (+ direction 1) 4))
-(define (right direction) (remainder (+ direction 1) 4))
-(define (back direction) (remainder (+ direction 2) 4))
+(define (left direction) (modulo (- direction 1) 4))
+(define (right direction) (modulo (+ direction 1) 4))
+(define (back direction) (modulo (+ direction 2) 4))
 
 ;;; Map functions
 ;;;   NB The map has its origin at the top left
 (define (loc_x location_pair) (car location_pair))
-(define (inc_x location_pair) (cons (+ 1 (loc_x location_pair)) (loc_y location_pair)))
-(define (dec_x location_pair) (cons (- 1 (loc_x location_pair)) (loc_y location_pair)))
-(define (loc_y location_pair) (car (cdr location_pair)))
+(define (inc_x location_pair) (cons (+ (loc_x location_pair) 1) (loc_y location_pair)))
+(define (dec_x location_pair) (cons (- (loc_x location_pair) 1) (loc_y location_pair)))
+(define (loc_y location_pair) (cdr location_pair))
 (define (inc_y location_pair) (cons (loc_x location_pair) (+ 1 (loc_y location_pair))))
 (define (dec_y location_pair) (cons (loc_x location_pair) (- 1 (loc_y location_pair))))
-(define (get_tile location map) (at (loc_x location) (at (loc_y location) map)))
+(define (height map) (size map))
+(define (length map) (size (car map)))
+(define (get_tile location map) (if (or (or (>= (loc_x location) (length map)) (< (loc_x location) 0))
+                                        (or (>= (loc_y location) (height map)) (< (loc_y location) 0))) 
+                                    0 ;; Say it is a wall
+                                    (at (loc_x location) (at (loc_y location) map))))
 (define (wall_tile? tile) (= tile 0))
 (define (empty_tile? tile) (= tile 1))
 (define (pill_tile? tile) (= tile 2))
@@ -68,7 +84,7 @@
 (define (tile_infront location direction map) (get_tile (infront_of location direction) map))
 
 ;; Should we move forward? Basic AI will say "can I? Then sure!"
-(define (move_forward? lambda_loc direction map) (empty_tile? (tile_infront lambda_loc direction map)))
+(define (move_forward? lambda_loc direction map) (not (wall_tile? (tile_infront lambda_loc direction map))))
 
 (define (left_of location direction) 
   (if (= direction (north)) (dec_x location) 
@@ -79,7 +95,7 @@
 (define (tile_left_of location direction map) (get_tile (left_of location direction) map))
 
 ;; Should we move left? Basic AI will say "can I? Then sure!"
-(define (move_left? lambda_loc direction map) (empty_tile? (tile_left_of lambda_loc direction map))) 
+(define (move_left? lambda_loc direction map) (not (wall_tile? (tile_left_of lambda_loc direction map)))) 
 
 (define (right_of location direction) 
   (if (= direction (north)) (inc_x location) 
@@ -89,7 +105,7 @@
 (define (tile_right_of location direction map) (get_tile (right_of location direction) map))
 
 ;; Should we move right? Basic AI will say "can I?" Then sure!"
-(define (move_right? lambda_loc direction map) (empty_tile? (tile_right_of lambda_loc direction map)))
+(define (move_right? lambda_loc direction map) (not (wall_tile? (tile_right_of lambda_loc direction map))))
 
 (define (next_move lambda_loc direction map) 
   (if (move_forward? lambda_loc direction map) (forward direction)
@@ -105,7 +121,7 @@
 ;; _ branching ('at' uses if)
 ;; _ recursive calls
 ;; _ constants
-;; (define (at x list) (if (= x 0) (car list) (at (_ x 1) (cdr list))))
+;; (define (at x list) (if (= x 0) (car list) (at (- x 1) (cdr list))))
 ;; (at 3 (cons 0 (cons 1 (cons 2 (cons 3 nil)))))
 ;; Expected result: 3
 
@@ -125,9 +141,9 @@
 (define (main world_state ghost_logic) (cons 0 step))
 
 ;; AI Test Code
-(define world_map (cons(cons 0 (cons 0 0)) (cons 0 (cons 1 1))))
-(define lambda_man_loc (cons 2 1))
-(define lambda_man_dir (north))
+(define world_map (cons(cons 0 (cons 0 (cons 0 0))) (cons (cons 1 (cons 1 (cons 1 0))) 0)))
+(define lambda_man_loc (cons 0 1))
+(define lambda_man_dir (south))
 
 (next_move lambda_man_loc lambda_man_dir world_map)
 
