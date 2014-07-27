@@ -4,11 +4,18 @@
   ;; Recursively look for the 'x'th element, 0-indexed
   (if (= x 0) (car list) (at (- x 1) (cdr list))))
 
+;;; mod using integer division. Useful for when no longer in lisp
+;; (defun mod (x n) (- x (* n (/ x n))))
+
 ;;; Movement Constants
-(defun up () 0)
-(defun left () 3)
-(defun down () 2)
-(defun right () 1)
+(defun north () 0)
+(defun west () 3)
+(defun south () 2)
+(defun east () 1)
+
+(defun left (direction) (mod (- direction 1) 4))
+(defun right (direction) (mod (+ direction 1) 4))
+(defun back (direction) (mod (+ direction 2) 4))
 
 ;;; Map functions
 (defun get-tile(x y map) (at x (at y map)))
@@ -53,6 +60,7 @@
 ;; Expected result: 3
 
 
+
 (defun step (our-state world-state) (cons 0 1))
 
 ;;; Main is the initial function
@@ -60,9 +68,7 @@
 ;;;    The assembly for main must be at the top of the file
 ;;;    We need to handle "pairs" (which are cons with no nil at the end)
 ;;;    We need to be able to pass functions as arguments
-(defun main (world-state, ghost-logic) (cons 0 step))
-
-
+(defun main (world-state ghost-logic) (cons 0 step))
 
 
 
