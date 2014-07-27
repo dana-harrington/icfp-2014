@@ -12,6 +12,7 @@ import com.nurun.icfp_2014._
 class ExamplesSpec extends Specification {
 
   "Example" should {
+    skipped
     "goto.gcc" in {
       val defs: Seq[Def] = Seq(
         Def("go", Seq("x"), App(Var("to"), Seq(App(Prim(ADD), Seq(Var("x"), Constant(1)))))),
