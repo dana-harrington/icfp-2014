@@ -1,4 +1,4 @@
-#lang racket
+;#lang racket
 ;;;; Racket Version of the ICFP_2014 AI
 
 (define (at x list) 
@@ -6,14 +6,14 @@
   (if (= x 0) (car list) (at (- x 1) (cdr list))))
 
 ;; TODO Remove this before compiling. atom? will exist in our language but not racket
-(define (atom? n) (not (or (pair? n) (null? n))))
-(define (lt a b) (< a b))
+;(define (atom? n) (not (or (pair? n) (null? n))))
+;(define (lt a b) (< a b))
 
 ;; TODO Uncomment before compiling
-;;(define (modulo x n) (- x (* n (/ x n))))
-;;(define (or a b) (> (+ a b) 0))
-;;(define (not a) (if (= a 1) 0 1))
-;;(define (lt a b) (if (>= a b) 0 1))
+(define (modulo x n) (- x (* n (/ x n))))
+(define (or a b) (> (+ a b) 0))
+(define (not a) (if (= a 1) 0 1))
+(define (lt a b) (if (>= a b) 0 1))
 
 (define (size list) (size_help list 0))
 (define (size_help list n) (if (atom? list) n (size_help (cdr list) (+ n 1))))  
@@ -50,6 +50,9 @@
 (define (fruit? tile) (= tile 4))
 (define (starting_tile? tile) (= tile 5))
 (define (ghost_starting_tile? tile) (= tile 6))
+
+
+(define (edible? tile) (or (pill_tile? tile) (power_tile? tile)))
 
 ;;; Input Getters
 (define (get_map input) (at 0 input))
@@ -112,6 +115,18 @@
       (if (move_right? lambda_loc direction map) (right direction) 
         (back direction))))) ;; assume we are always able to turn around
 
+(define (find_food location direction map)
+  (if (edible? (tile_infront location direction map)) (forward direction)
+    (if (edible? (tile_left_of location direction map)) (left direction)
+      (if (edible? (tile_right_of location direction map)) (right direction)
+      (next_move location direction map))
+    )
+  )
+ )
+
+ (define (next_move_dgh lambda_loc direction map)
+   (find_food lambda_loc direction map))
+
 ;; The following code could be used by the compiler to test:
 ;; _ defining a function
 ;; _ using a function
@@ -130,7 +145,8 @@
 ;; (f g 5)
 ;; Expected result: 16
 
-(define (step our_state world_state) (cons our_state (next_move (lambda_loc world_state) (lambda_direction world_state) (get_map world_state))))
+(define (step our_state world_state) (cons our_state (next_move_dgh (lambda_loc world_state) (lambda_direction world_state) (get_map world_state))))
+
 
 ;; Test AI Code
 ;(define world_map (cons(cons 0 (cons 0 (cons 0 0))) (cons (cons 1 (cons 1 (cons 1 0))) 0)))
