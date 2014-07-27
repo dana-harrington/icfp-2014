@@ -1,6 +1,6 @@
 package com.nurun.icfp_2014.ir
 
-import com.nurun.icfp_2014.gcccode.{SUB, ADD, PrimativeOp}
+import com.nurun.icfp_2014.gcccode.{SUB, ADD, PrimitiveOp}
 import com.nurun.icfp_2014.parser.{Expr, ProgramAST}
 import com.nurun.icfp_2014.parser
 
@@ -13,7 +13,7 @@ sealed trait IR
 case class Abs(args: Seq[String], body: IR) extends IR
 case class App(fn: Applier, args: Seq[IR]) extends IR
 case class Constant(constant: Int) extends IR
-case class Prim(op: PrimativeOp) extends IR with Applier
+case class Prim(op: PrimitiveOp) extends IR with Applier
 case class Var(name: String) extends IR with Applier
 case class If(pred: IR, thn: IR, els: IR) extends IR
 
@@ -33,7 +33,7 @@ object Example {
 }
 
 object IR {
-  val primitiveOps: Map[String, PrimativeOp] = {
+  val primitiveOps: Map[String, PrimitiveOp] = {
     import com.nurun.icfp_2014.gcccode._
     Map(
       "+" -> ADD,

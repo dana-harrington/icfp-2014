@@ -66,37 +66,37 @@ case class LDC(lit: Literal) extends GCCCode {
 case class LD(env_offset: Int, data_offset: Int) extends GCCCode {
   def output = s"LD $env_offset $data_offset"
 }
-case object ADD extends GCCCode with PrimativeOp {
+case object ADD extends GCCCode with PrimitiveOp {
   def output = s"ADD"
 }
-case object SUB extends GCCCode with PrimativeOp {
+case object SUB extends GCCCode with PrimitiveOp {
   def output = s"SUB"
 }
-case object MUL extends GCCCode with PrimativeOp {
+case object MUL extends GCCCode with PrimitiveOp {
   def output = s"MUL"
 }
-case object DIV extends GCCCode with PrimativeOp {
+case object DIV extends GCCCode with PrimitiveOp {
   def output = s"DIV"
 }
-case object CEQ extends GCCCode with PrimativeOp {
+case object CEQ extends GCCCode with PrimitiveOp {
   def output = s"CEQ"
 }
-case object CGT extends GCCCode with PrimativeOp {
+case object CGT extends GCCCode with PrimitiveOp {
   def output = s"CGT"
 }
-case object CGTE extends GCCCode with PrimativeOp {
+case object CGTE extends GCCCode with PrimitiveOp {
   def output = s"CGTE"
 }
-case object ATOM extends GCCCode with PrimativeOp {
+case object ATOM extends GCCCode with PrimitiveOp {
   def output = s"ATOM"
 }
-case object CONS extends GCCCode with PrimativeOp {
+case object CONS extends GCCCode with PrimitiveOp {
   def output = s"CONS"
 }
-case object CAR extends GCCCode with PrimativeOp {
+case object CAR extends GCCCode with PrimitiveOp {
   def output = s"CAR"
 }
-case object CDR extends GCCCode with PrimativeOp {
+case object CDR extends GCCCode with PrimitiveOp {
   def output = s"CDR"
 }
 case class SEL(true_address: Address, false_address: Address) extends GCCCode {
@@ -128,7 +128,7 @@ case object STOP extends GCCCode {
 
 
 // Primative ops are referenced directly in the source language and can be applied directly
-trait PrimativeOp extends GCCCode
+trait PrimitiveOp extends GCCCode
 
 
 // A GCC operation with an optional label
