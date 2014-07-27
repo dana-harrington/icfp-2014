@@ -13,6 +13,9 @@ class Lexer extends StdLexical {
     whitespaceChar
     | ';' ~ rep( chrExcept(EofCh, '\n') )
   )
+
+  /** Returns the legal identifier chars, except digits. */
+  override def identChar = letter | elem('_') | elem('?')
 }
 
 object Parser extends StdTokenParsers {
@@ -35,8 +38,14 @@ object Parser extends StdTokenParsers {
       If(pred, thn, els)
   }
 
-  def defun = "(" ~> Keyword("define") ~> ("(" ~> ident ~ rep(ident) <~ ")") ~ expr <~ ")" ^^ { case name ~ args ~ expr  =>
+  def defun = defunWithArgs | defunWithNoArgs
+
+  def defunWithArgs = "(" ~> Keyword("define") ~> ("(" ~> ident ~ rep(ident) <~ ")") ~ expr <~ ")" ^^ { case name ~ args ~ expr  =>
     Def(name, args, expr)
+  }
+
+  def defunWithNoArgs = "(" ~> Keyword("define") ~> ident ~ expr <~ ")" ^^ { case name ~ expr  =>
+    Def(name, Seq(), expr)
   }
 
   def abs = "(" ~> Keyword("lambda") ~> ("(" ~> rep(ident) <~ ")") ~ expr <~ ")" ^^ { case args ~ expr  =>
