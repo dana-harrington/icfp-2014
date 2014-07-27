@@ -8,3 +8,4 @@ case class Constant(c: Int) extends Expr
 case class Literal(v: String) extends Expr
 case class App(fn: Expr, args: Seq[Expr]) extends Expr
 case class Abs(args: Seq[String], body: Expr) extends Expr
+case class If(test: Expr, thn: Expr, els: Expr) extends Expr

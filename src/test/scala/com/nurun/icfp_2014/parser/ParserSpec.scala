@@ -49,9 +49,9 @@ class ParserSpec extends Specification {
         """
           |(if (> 1 2) 42 0)
         """.stripMargin
-      val main = App(Literal("if"), Seq(App(Literal("CGT"), Seq(Constant(1), Constant(2))),
+      val main = If(App(Literal(">"), Seq(Constant(1), Constant(2))),
                                         Constant(42),
-                                        Constant(0)))
+                                        Constant(0))
       val expected = ProgramAST(Seq(), main)
       Parser.parse(program).get === expected
     }
