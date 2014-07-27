@@ -40,7 +40,7 @@ object CodeGen {
 
   def codegen(d: Def): Seq[LabelledGCC] = {
 
-    val debruijn = d.args.zipWithIndex.toMap
+    val debruijn = d.args.zipWithIndex.toMap.mapValues(i => (0,i))
     val GenCode(main, branchCode) = codegen(debruijn, d.body)
     (main :+ RTN).labelled(d.name)
   }
@@ -49,9 +49,13 @@ object CodeGen {
   implicit def gcToLabelledGc(gc: GCCCode): LabelledGCC = LabelledGCC(gc, None)
 
   // compile ir with a mapping of symbol name to environment offsets
-  def codegen(debruijn: Map[String, Int], ir: IR): GenCode = {
+  def codegen(debruijn: Map[String, (Int,Int)], ir: IR): GenCode = {
+
     ir match {
-      case Lambda(_, _) => ???
+      case Lambda(args, expr) =>
+        val localScope = args.zipWithIndex.toMap.mapValues(i => (0,i))
+        val parentScope = debruijn.mapValues{ case(fp, idx) => (fp+1, idx)}
+        codegen(parentScope ++ localScope, expr)
 
       case App(Prim(op), xs) =>
         val evalArgs = xs.map(codegen(debruijn, _))
@@ -72,8 +76,8 @@ object CodeGen {
         Seq(op)
 
       case Var(v) =>
-        val idx = debruijn(v)
-        Seq(LD(0,idx))
+        val (fp,idx) = debruijn(v)
+        Seq(LD(fp,idx))
 
       case If(pred, thn, els) =>
         /* Generate labelled branches for 'then' and 'else', each ending with JOIN

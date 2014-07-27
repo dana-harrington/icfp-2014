@@ -18,11 +18,11 @@ object Parser extends StdTokenParsers {
   val lexical = new Lexer
   val opChars = Seq("+", "-", "*", "/", ">", "<", ">=")
   lexical.delimiters ++= (Seq("(", ")") ++ opChars)
-  lexical.reserved ++= Seq("if", "defun")
+  lexical.reserved ++= Seq("if", "define", "lambda")
 
   import lexical.Keyword
 
-  def expr: Parser[Expr] = atom | ifStmt | ap
+  def expr: Parser[Expr] = atom | ifStmt | abs | ap
   def const = numericLit ^^ (n => Constant(n.toInt))
   def op = "+" | "-" | "*" | "/" | ">" | "<" | ">="
   def literal = (ident | op) ^^ { op => Literal(op) }
@@ -33,8 +33,12 @@ object Parser extends StdTokenParsers {
       If(pred, thn, els)
   }
 
-  def defun = "(" ~> Keyword("defun") ~> ident ~ ("(" ~> rep(ident) <~ ")") ~ expr <~ ")" ^^ { case name ~ args ~ expr  =>
-    Def(name, args, expr)
+  def defun = "(" ~> Keyword("define") ~> ident ~ expr <~ ")" ^^ { case name ~ expr  =>
+    Def(name, expr)
+  }
+
+  def abs = "(" ~> Keyword("lambda") ~> ("(" ~> rep(ident) <~ ")") ~ expr <~ ")" ^^ { case args ~ expr  =>
+    Abs(args, expr)
   }
 
   def prog = rep(defun) ~ expr ^^ { case defs ~ main => ProgramAST(defs, main) }

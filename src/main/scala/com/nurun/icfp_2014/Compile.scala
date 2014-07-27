@@ -1,7 +1,7 @@
 package com.nurun.icfp_2014
 
 import com.nurun.icfp_2014.gcccode.{CodeGen, Env, GCCCode}
-import com.nurun.icfp_2014.ir.Example
+import com.nurun.icfp_2014.ir.{IR, Example}
 import scala.io.Source
 import scala.language.implicitConversions
 
@@ -13,7 +13,8 @@ object Compile {
       //GCCCode.delabel(ExampleLabelledGCC.ex1).map(_.output).foreach(println)
       val sourceCode = Source.fromFile(file).mkString
       val ast = parser.Parser.parse(sourceCode).get
-      val labelled = CodeGen.codegen(Example.ex1)
+      val ir = IR.fromAST(ast)
+      val labelled = CodeGen.codegen(ir)
       val delabelled = GCCCode.delabel(labelled)
       val output = delabelled.map(_.output)
 

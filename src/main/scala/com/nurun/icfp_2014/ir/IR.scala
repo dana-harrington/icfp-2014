@@ -1,6 +1,7 @@
 package com.nurun.icfp_2014.ir
 
 import com.nurun.icfp_2014.gcccode.{SUB, ADD, PrimativeOp}
+import com.nurun.icfp_2014.parser.ProgramAST
 
 import scala.language.implicitConversions
 
@@ -30,5 +31,8 @@ object Example {
 
 }
 
+object IR {
+  def fromAST(ast: ProgramAST): Program = ???
+}
 
 
