@@ -26,7 +26,7 @@ object Parser extends StdTokenParsers {
 
   def expr: Parser[Expr] = atom | ifStmt | abs | ap
   def const = numericLit ^^ (n => Constant(n.toInt))
-  def op = "+" | "-" | "*" | "/" | ">" | ">="
+  def op = "+" | "-" | "*" | "/" | ">" | ">=" | "="
   def literal = (ident | op) ^^ { op => Literal(op) }
   def atom = literal |
              const
