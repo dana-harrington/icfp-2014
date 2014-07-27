@@ -21,7 +21,7 @@ class Lexer extends StdLexical {
 object Parser extends StdTokenParsers {
   type Tokens = StdLexical
   val lexical = new Lexer
-  val opChars = IR.primativeOps.keys
+  val opChars = IR.primitiveOps.keys
   lexical.delimiters ++= (Seq("(", ")") ++ opChars)
   lexical.reserved ++= Seq("if", "define", "lambda")
 

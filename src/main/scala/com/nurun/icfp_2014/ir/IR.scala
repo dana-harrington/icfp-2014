@@ -33,7 +33,7 @@ object Example {
 }
 
 object IR {
-  val primativeOps: Map[String, PrimativeOp] = {
+  val primitiveOps: Map[String, PrimativeOp] = {
     import com.nurun.icfp_2014.gcccode._
     Map(
       "+" -> ADD,
@@ -45,7 +45,8 @@ object IR {
       "cdr" -> CDR,
       "=" -> CEQ,
       ">" -> CGT,
-      ">=" -> CGTE
+      ">=" -> CGTE,
+      "atom?" -> ATOM
     )
   }
 
@@ -62,9 +63,9 @@ object IR {
   def translate(expr: Expr): IR = expr match {
     case parser.Constant(c) => Constant(c)
     case parser.Literal(l) =>
-      primativeOps.get(l).map(Prim.apply).getOrElse(Var(l))
+      primitiveOps.get(l).map(Prim.apply).getOrElse(Var(l))
     case parser.App(parser.Literal(l), args) => 
-      val applier = primativeOps.get(l).map(Prim.apply).getOrElse(Var(l))
+      val applier = primitiveOps.get(l).map(Prim.apply).getOrElse(Var(l))
       App(applier, args.map(translate))
     case parser.Abs(args, body) =>
       Abs(args, translate(body))

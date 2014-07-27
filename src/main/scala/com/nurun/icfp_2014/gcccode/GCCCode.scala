@@ -87,7 +87,7 @@ case object CGT extends GCCCode with PrimativeOp {
 case object CGTE extends GCCCode with PrimativeOp {
   def output = s"CGTE"
 }
-case object ATOM extends GCCCode {
+case object ATOM extends GCCCode with PrimativeOp {
   def output = s"ATOM"
 }
 case object CONS extends GCCCode with PrimativeOp {
