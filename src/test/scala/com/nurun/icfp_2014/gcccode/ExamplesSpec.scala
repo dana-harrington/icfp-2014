@@ -22,9 +22,9 @@ class ExamplesSpec extends Specification {
       val result = GCCCode.delabel(ExampleLabelledGCC.ex1).map(_.output)
 
       val compare = result.zip(exFormat(gotogcc))
-      compare.foreach {
+      /*compare.foreach {
         case (actual, expected) => println(actual.padTo(20, ' ') + expected)
-      }
+      }*/
       for {
         (actual, expected) <- compare
       } yield {
