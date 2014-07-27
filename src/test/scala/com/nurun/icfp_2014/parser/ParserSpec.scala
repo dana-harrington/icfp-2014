@@ -95,6 +95,23 @@ class ParserSpec extends Specification {
       Parser.parse(program).get === expected
     }
 
+    "sample" in {
+      val program =
+        """
+          |    (define (at x list)
+          |      (if (= x 0) (car list) (at (- x 1) (cdr list))))
+          |
+          |
+          |    (next_move lambda_man_loc lambda_man_dir world_map)
+        """.stripMargin
+
+      val result = Parser.parse(program)
+      println(result)
+      result.toOption should beSome
+    }
+
+
+
   }
 
 }
