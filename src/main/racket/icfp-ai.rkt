@@ -20,7 +20,7 @@
 
 ;;; Movement Constants
 (define (north) 0)
-(define (west ) 3)
+(define (west) 3)
 (define (south) 2)
 (define (east) 1)
 
@@ -35,8 +35,8 @@
 (define (inc_x location_pair) (cons (+ (loc_x location_pair) 1) (loc_y location_pair)))
 (define (dec_x location_pair) (cons (- (loc_x location_pair) 1) (loc_y location_pair)))
 (define (loc_y location_pair) (cdr location_pair))
-(define (inc_y location_pair) (cons (loc_x location_pair) (+ 1 (loc_y location_pair))))
-(define (dec_y location_pair) (cons (loc_x location_pair) (- 1 (loc_y location_pair))))
+(define (inc_y location_pair) (cons (loc_x location_pair) (+ (loc_y location_pair) 1)))
+(define (dec_y location_pair) (cons (loc_x location_pair) (- (loc_y location_pair) 1)))
 (define (height map) (size map))
 (define (length map) (size (car map)))
 (define (get_tile location map) (if (or (or (>= (loc_x location) (length map)) (lt (loc_x location) 0))
@@ -130,7 +130,7 @@
 ;; (f g 5)
 ;; Expected result: 16
 
-(define (step our_state world_state) (cons 0 (next_move (lambda_loc world_state) (lambda_direction world_state) (get_map world_state))))
+(define (step our_state world_state) (cons our_state (next_move (lambda_loc world_state) (lambda_direction world_state) (get_map world_state))))
 
 ;; Test AI Code
 ;(define world_map (cons(cons 0 (cons 0 (cons 0 0))) (cons (cons 1 (cons 1 (cons 1 0))) 0)))
@@ -140,3 +140,5 @@
 ;(define world_state (cons world_map (cons lambda_state (cons 0 0))))
 
 (lambda (world_state ghost_logic) (cons 0 step))
+
+;(next_move (lambda_loc world_state) (lambda_direction world_state) (get_map world_state))
