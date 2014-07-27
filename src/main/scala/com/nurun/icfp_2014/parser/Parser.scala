@@ -16,12 +16,13 @@ class Lexer extends StdLexical {
 object Parser extends StdTokenParsers {
   type Tokens = StdLexical
   val lexical = new Lexer
-  lexical.delimiters ++= Seq("(", ")", "+", "-", "*", "/", ">", "<", ">=")
+  val opChars = Seq("+", "-", "*", "/", ">", "<", ">=")
+  lexical.delimiters ++= (Seq("(", ")") ++ opChars)
   lexical.reserved ++= Seq("if", "defun")
 
   import lexical.Keyword
 
-  def expr: Parser[Expr] = atom | ap
+  def expr: Parser[Expr] = atom | ifStmt | ap
   def const = numericLit ^^ (n => Constant(n.toInt))
   def op = "+" | "-" | "*" | "/" | ">" | "<" | ">="
   def literal = (ident | op) ^^ { op => Literal(op) }
