@@ -18,6 +18,19 @@ class ParserSpec extends Specification {
       Parser.parse(program).get === expected
     }
 
+    "parse a definition" in {
+      val defn = "(defun f (x) (+ x x))"
+      val tokens = new Parser.lexical.Scanner(defn)
+      def showTokens(s: Parser.lexical.Scanner): Unit =
+        if (!s.atEnd) {
+          println(s.first.toString())
+          showTokens(s.rest)
+        }
+      showTokens(tokens)
+      Parser.phrase(Parser.defun)(tokens).get === Def("f", Seq("x"), App(Literal("+"), Seq(Literal("x"), Literal("x"))))
+
+    }
+
     "parse a program with a definition" in {
       val program =
         """
@@ -28,7 +41,7 @@ class ParserSpec extends Specification {
       val main = App(Literal("f"), Seq(Constant(2)))
       val expected = ProgramAST(Seq(fDef), main)
 
-      Parser.parse(program).get == expected
+      Parser.parse(program).get === expected
     }
 
     "parse an if statement" in {
