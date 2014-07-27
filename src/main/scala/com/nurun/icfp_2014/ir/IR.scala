@@ -1,7 +1,8 @@
 package com.nurun.icfp_2014.ir
 
 import com.nurun.icfp_2014.gcccode.{SUB, ADD, PrimativeOp}
-import com.nurun.icfp_2014.parser.ProgramAST
+import com.nurun.icfp_2014.parser.{Expr, ProgramAST}
+import com.nurun.icfp_2014.parser
 
 import scala.language.implicitConversions
 
@@ -9,7 +10,7 @@ import scala.language.implicitConversions
  * Created by dana.harrington on 2014-07-25.
  */
 sealed trait IR
-case class Lambda(args: Seq[String], body: IR) extends IR
+case class Abs(args: Seq[String], body: IR) extends IR
 case class App(fn: Applier, args: Seq[IR]) extends IR
 case class Constant(constant: Int) extends IR
 case class Prim(op: PrimativeOp) extends IR with Applier
@@ -48,7 +49,29 @@ object IR {
     )
   }
 
-  def fromAST(ast: ProgramAST): Program = ???
+  def translate(ast: ProgramAST): Program = {
+    val main = translate(ast.main)
+    val defs = ast.defs.map(translate)
+    Program(defs, main)
+  }
+  
+  def translate(d: parser.Def): Def = {
+    Def(d.name, d.args, translate(d.body))
+  }
+  
+  def translate(expr: Expr): IR = expr match {
+    case parser.Constant(c) => Constant(c)
+    case parser.Literal(l) =>
+      primativeOps.get(l).map(Prim.apply).getOrElse(Var(l))
+    case parser.App(parser.Literal(l), args) => 
+      val applier = primativeOps.get(l).map(Prim.apply).getOrElse(Var(l))
+      App(applier, args.map(translate))
+    case parser.Abs(args, body) =>
+      Abs(args, translate(body))
+    case parser.If(pred, thn, els) =>
+      If(translate(pred), translate(thn), translate(els))
+    case app@parser.App(_, _) => throw new Exception(s"Illegal application: $app")
+  }
 }
 
 

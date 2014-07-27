@@ -13,7 +13,7 @@ object Compile {
       //GCCCode.delabel(ExampleLabelledGCC.ex1).map(_.output).foreach(println)
       val sourceCode = Source.fromFile(file).mkString
       val ast = parser.Parser.parse(sourceCode).get
-      val ir = IR.fromAST(ast)
+      val ir = IR.translate(ast)
       val labelled = CodeGen.codegen(ir)
       val delabelled = GCCCode.delabel(labelled)
       val output = delabelled.map(_.output)

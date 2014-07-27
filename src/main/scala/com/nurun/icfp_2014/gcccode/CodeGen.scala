@@ -33,7 +33,7 @@ object CodeGen {
     // Generate code for main
     val main = codegen(Map.empty, p.main)
     // Add def code after any main code
-    val genCode = main.copy(branches = main.branches ++ defs)
+    val genCode = main.copy(branches = main.branches ++ defs) :+ STOP
     // Assemble into sequence of labelled GCC code ops
     genCode.toCode()
   }
@@ -52,7 +52,7 @@ object CodeGen {
   def codegen(debruijn: Map[String, (Int,Int)], ir: IR): GenCode = {
 
     ir match {
-      case Lambda(args, expr) =>
+      case Abs(args, expr) =>
         val localScope = args.zipWithIndex.toMap.mapValues(i => (0,i))
         val parentScope = debruijn.mapValues{ case(fp, idx) => (fp+1, idx)}
         codegen(parentScope ++ localScope, expr)
