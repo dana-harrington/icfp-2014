@@ -12,13 +12,18 @@ object Compile {
     sourceFile.foreach { file =>
       //GCCCode.delabel(ExampleLabelledGCC.ex1).map(_.output).foreach(println)
       val sourceCode = Source.fromFile(file).mkString
-      val ast = parser.Parser.parse(sourceCode).get
-      val ir = IR.translate(ast)
-      val labelled = CodeGen.codegen(ir)
-      val delabelled = GCCCode.delabel(labelled)
-      val output = delabelled.map(_.output)
+      parser.Parser.parse(sourceCode) match {
+        case parser.Parser.Success(ast, rest) =>
+          val ir = IR.translate(ast)
+          val labelled = CodeGen.codegen(ir)
+          val delabelled = GCCCode.delabel(labelled)
+          val output = delabelled.map(_.output)
 
-      output.foreach(println)
+          output.foreach(println)
+
+        case e: parser.Parser.NoSuccess =>
+          Console.err.println(e.msg)
+      }
     }
   }
 
