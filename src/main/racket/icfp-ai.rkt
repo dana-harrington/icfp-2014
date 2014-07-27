@@ -10,8 +10,11 @@
 
 ;; TODO Uncomment before compiling
 ;;(define (or a b) (> (+ a b) 0))
-;;(define (not a) (if a 0 1))
-;;(define (< a b) (if (>= a b) 0 1))
+;;(define (not a) (if (= a 1) 0 1))
+;;(define (lt a b) (if (>= a b) 0 1))
+
+;; TODO Remove this before compiling
+(define (lt a b) (< a b))
 
 (define (size list) (size_help list 0))
 (define (size_help list n) (if (atom? list) n (size_help (cdr list) (+ n 1))))  
@@ -40,8 +43,8 @@
 (define (dec_y location_pair) (cons (loc_x location_pair) (- 1 (loc_y location_pair))))
 (define (height map) (size map))
 (define (length map) (size (car map)))
-(define (get_tile location map) (if (or (or (>= (loc_x location) (length map)) (< (loc_x location) 0))
-                                        (or (>= (loc_y location) (height map)) (< (loc_y location) 0))) 
+(define (get_tile location map) (if (or (or (>= (loc_x location) (length map)) (lt (loc_x location) 0))
+                                        (or (>= (loc_y location) (height map)) (lt (loc_y location) 0))) 
                                     0 ;; Say it is a wall
                                     (at (loc_x location) (at (loc_y location) map))))
 (define (wall_tile? tile) (= tile 0))
@@ -60,10 +63,10 @@
 
 ;;; lambda_man properties
 (define (lambda_vitality input) (at 0 (get_man_status input)))
-(define (lambda_loc input) (at 2 (get_man_status input)))
-(define (lambda_direction input) (at 3 (get_man_status input)))
-(define (lambda_lives input) (at 4 (get_man_status input)))
-(define (lambda_score input) (at 5 (get_man_status input)))
+(define (lambda_loc input) (at 1 (get_man_status input)))
+(define (lambda_direction input) (at 2 (get_man_status input)))
+(define (lambda_lives input) (at 3 (get_man_status input)))
+(define (lambda_score input) (at 4 (get_man_status input)))
 
 ;;; ghost properties
 (define (ghost_vitality ghost input) (at 0 (at ghost (get_ghosts input))))
@@ -131,19 +134,13 @@
 ;; (f g 5)
 ;; Expected result: 16
 
-(define (step our_state world_state) (cons 0 1))
+(define (step our_state world_state) (cons 0 (next_move (lambda_loc world_state) (lambda_direction world_state) (get_map world_state))))
 
-;;; Main is the initial function
-;;; NB Main requires a number of things to be handled by the compiler:
-;;;    The assembly for main must be at the top of the file
-;;;    We need to handle "pairs" (which are cons with no nil at the end)
-;;;    We need to be able to pass functions as arguments
-(define (main world_state ghost_logic) (cons 0 step))
+;; Test AI Code
+;(define world_map (cons(cons 0 (cons 0 (cons 0 0))) (cons (cons 1 (cons 1 (cons 1 0))) 0)))
+;(define lambda_man_loc (cons 0 1))
+;(define lambda_man_dir (south))
+;(define lambda_state (cons 0 (cons lambda_man_loc (cons lambda_man_dir (cons 0 0)))))
+;(define world_state (cons world_map (cons lambda_state (cons 0 0))))
 
-;; AI Test Code
-(define world_map (cons(cons 0 (cons 0 (cons 0 0))) (cons (cons 1 (cons 1 (cons 1 0))) 0)))
-(define lambda_man_loc (cons 0 1))
-(define lambda_man_dir (south))
-
-(next_move lambda_man_loc lambda_man_dir world_map)
-
+(lambda (world_state ghost_logic) (cons 0 step))
