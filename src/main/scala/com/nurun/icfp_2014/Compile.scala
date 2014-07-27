@@ -2,47 +2,55 @@ package com.nurun.icfp_2014
 
 import java.io.PrintStream
 
-import com.nurun.icfp_2014.gcccode.{CodeGen, Env, GCCCode}
-import com.nurun.icfp_2014.ir.{IR, Example}
+import com.nurun.icfp_2014.gcccode.{CodeGen, GCCCode}
+import com.nurun.icfp_2014.ir.IR
+import com.nurun.icfp_2014.parser.Parser
 import scala.io.Source
 import scala.language.implicitConversions
 
 object Compile {
-  def main(args: Array[String]): Unit = {
-    val sourceFile = args.headOption
 
+  def main(args: Array[String]): Unit = {
     val outStream =
       if (args.length >= 2)
         new PrintStream(new java.io.File(args(1)))
       else
         Console.out
 
-    val output = sourceFile.map { file =>
-      //GCCCode.delabel(ExampleLabelledGCC.ex1).map(_.output).foreach(println)
-      val sourceCode = Source.fromFile(file).mkString
-      val output = parser.Parser.parse(sourceCode).map{ ast =>
-        val ir = IR.translate(ast)
-        val labelled = CodeGen.codegen(ir)
-        val delabelled = GCCCode.delabel(labelled)
-        val output = delabelled.map(_.output)
+    args.headOption match {
 
-        output.mkString("\n")
+      case Some(sourceFileName) =>
+        val output = compileFile(sourceFileName)
+        printOutput(output, outStream)
 
-      }
-      output match {
-        case parser.Parser.Success(outputText, _) =>
-          outStream.print(outputText)
-
-        case e: parser.Parser.NoSuccess =>
-          Console.err.println(e.msg)
-      }
+      case None =>
+        Console.err.println("You must provide a source file")
     }
+
   }
 
-  case class ParseResult(ops: Seq[GCCCode], env: Env)
+  def compileFile(file: String): Parser.ParseResult[Seq[GCCCode]] = {
+    val sourceCode = Source.fromFile(file).mkString
+    Parser.parse(sourceCode)
+          .map(s => compileAST(s))
+  }
 
-  case class ParsedLine(label: Option[String], code: GCCCode)
+  def compileAST(ast: parser.ProgramAST): Seq[GCCCode] = {
+    val ir = IR.translate(ast)
+    val labelled = CodeGen.codegen(ir)
+    GCCCode.delabel(labelled)
+  }
 
+  def printOutput(output: Parser.ParseResult[Seq[GCCCode]], outStream: PrintStream): Unit = {
+    output match {
+      case parser.Parser.Success(outputCode, _) =>
+        val outputText = outputCode.map(_.output).mkString("\n")
+        outStream.println(outputText)
+
+      case e: parser.Parser.NoSuccess =>
+        Console.err.println(e.msg)
+    }
+  }
 }
 
 object ExampleLabelledGCC {
