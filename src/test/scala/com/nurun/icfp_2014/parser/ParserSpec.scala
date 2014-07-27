@@ -82,6 +82,18 @@ class ParserSpec extends Specification {
       Parser.parse(program).get === expected
     }
 
+    "parse an identifier with underscores" in {
+      val program =
+        """
+          |(define (dash_y x) (* x x)) ; this is also a comment
+          |(dash_y 2)
+        """.stripMargin
+      val fDef = Def("dash_y", Seq("x"), App(Literal("*"), Seq(Literal("x"), Literal("x"))))
+      val main = App(Literal("dash_y"), Seq(Constant(2)))
+      val expected = ProgramAST(Seq(fDef), main)
+
+      Parser.parse(program).get === expected
+    }
 
   }
 
