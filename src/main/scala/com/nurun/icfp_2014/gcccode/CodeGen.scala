@@ -76,8 +76,14 @@ object CodeGen {
         Seq(op)
 
       case Var(v) =>
-        val (fp,idx) = debruijn(v)
-        Seq(LD(fp,idx))
+        debruijn.get(v) match {
+            // var from env
+          case Some((fp, idx)) =>
+            Seq(LD(fp, idx))
+            // top level def
+          case None =>
+            Seq(LDF(AddressLabel(v)))
+        }
 
       case If(pred, thn, els) =>
         /* Generate labelled branches for 'then' and 'else', each ending with JOIN
