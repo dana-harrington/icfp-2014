@@ -1,5 +1,7 @@
 package com.nurun.icfp_2014
 
+import java.io.PrintStream
+
 import com.nurun.icfp_2014.gcccode.{CodeGen, Env, GCCCode}
 import com.nurun.icfp_2014.ir.{IR, Example}
 import scala.io.Source
@@ -9,17 +11,27 @@ object Compile {
   def main(args: Array[String]): Unit = {
     val sourceFile = args.headOption
 
-    sourceFile.foreach { file =>
+    val outStream =
+      if (args.length >= 2)
+        new PrintStream(new java.io.File(args(1)))
+      else
+        Console.out
+
+    val output = sourceFile.map { file =>
       //GCCCode.delabel(ExampleLabelledGCC.ex1).map(_.output).foreach(println)
       val sourceCode = Source.fromFile(file).mkString
-      parser.Parser.parse(sourceCode) match {
-        case parser.Parser.Success(ast, rest) =>
-          val ir = IR.translate(ast)
-          val labelled = CodeGen.codegen(ir)
-          val delabelled = GCCCode.delabel(labelled)
-          val output = delabelled.map(_.output)
+      val output = parser.Parser.parse(sourceCode).map{ ast =>
+        val ir = IR.translate(ast)
+        val labelled = CodeGen.codegen(ir)
+        val delabelled = GCCCode.delabel(labelled)
+        val output = delabelled.map(_.output)
 
-          output.foreach(println)
+        output.mkString("\n")
+
+      }
+      output match {
+        case parser.Parser.Success(outputText, _) =>
+          outStream.print(outputText)
 
         case e: parser.Parser.NoSuccess =>
           Console.err.println(e.msg)
