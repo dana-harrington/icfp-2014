@@ -1,3 +1,9 @@
+import AssemblyKeys._
+
+assemblySettings
+
+jarName in assembly := "Compile.jar"
+
 name := """icfp_2014"""
 
 version := "1.0"

@@ -1,0 +1,39 @@
+MOV e,34   ; 0
+INT 3   ; 1
+INT 5                 ; Get our x-ordinate in A.   ; 2
+MOV g,a   ; 3
+MOV h,b   ; 4
+INT 1                 ;get lambdaman   ; 5
+JGT 12,g,a    ; compare x   ; 6
+JGT 10,h,b    ; compare y   ; 7
+MOV c,3               ; SW, so 3   ; 8
+MOV pc,e   ; 9
+MOV c,1               ; NW, so 1   ; 10
+MOV pc,e   ; 11
+JGT 15,h,b      ; compare y   ; 12
+MOV c,0               ; SE, so 0   ; 13
+MOV pc,e   ; 14
+MOV c,2               ; NE, so 2   ; 15
+MOV pc,e   ; 16
+INT 3   ; 17
+INT 5   ; 18
+JEQ 24,c,0    ; up?   ; 19
+JEQ 26,c,1    ; right?   ; 20
+JEQ 28,c,2   ; down?   ; 21
+SUB a,1               ; left   ; 22
+MOV pc,29   ; 23
+SUB b,1               ; up   ; 24
+MOV pc,29   ; 25
+ADD a,1               ; right   ; 26
+MOV pc,29   ; 27
+ADD b,1               ; down   ; 28
+INT 7                 ; a!=0 => ok   ; 29
+MOV pc,e   ; 30
+MOV a,c   ; 31
+INT 0   ; 32
+HLT   ; 33
+MOV e,36   ; 34
+MOV pc,17   ; 35
+JGT 31,a,0   ; 36
+INC a                ; increment direction   ; 37
+MOV pc,e   ; 38
